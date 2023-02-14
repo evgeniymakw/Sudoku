@@ -1,0 +1,69 @@
+import random
+
+# Define the Sudoku board as a 2D list
+board = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+]
+
+# Define a function to print the Sudoku board
+def print_board():
+    for i in range(len(board)):
+        if i % 3 == 0 and i != 0:
+            print("- - - - - - - - - - - - - ")
+        for j in range(len(board[0])):
+            if j % 3 == 0 and j != 0:
+                print("| ", end="")
+            if j == 8:
+                print(board[i][j])
+            else:
+                print(str(board[i][j]) + " ", end="")
+
+# Define a function to check if a move is valid
+def is_valid_move(row, col, num):
+    # Check row
+    for i in range(len(board[0])):
+        if board[row][i] == num and i != col:
+            return False
+    # Check column
+    for i in range(len(board)):
+        if board[i][col] == num and i != row:
+            return False
+    # Check 3x3 box
+    box_row = (row // 3) * 3
+    box_col = (col // 3) * 3
+    for i in range(box_row, box_row + 3):
+        for j in range(box_col, box_col + 3):
+            if board[i][j] == num and (i, j) != (row, col):
+                return False
+    return True
+
+# Define a function to generate a complete Sudoku board
+def generate_board():
+    # Initialize board
+    board = [[0 for _ in range(9)] for _ in range(9)]
+    # Generate random numbers to fill the board
+    numbers = [i for i in range(1, 10)]
+    random.shuffle(numbers)
+    # Fill the board using a backtracking algorithm
+    def solve_board(board):
+        for i in range(len(board)):
+            for j in range(len(board[0])):
+                if board[i][j] == 0:
+                    for num in numbers:
+                        if is_valid_move(i, j, num):
+                            board[i][j] = num
+                            if solve_board(board):
+                                return True
+                            board[i][j] = 0
+                    return False
+        return True
+    solve_board(board)
+    return
